@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 const API_BASE_URL =
-  "https://script.google.com/macros/s/AKfycbwbZxXWK8KIw1ERaFm6B3zrV1ZSpfyRO1T7X51N0OpFwGobps4UIm8t9ROOIDao5HZ_/exec";
+  "https://script.google.com/macros/s/AKfycbzNNroB6Io6Pi4mZwcnEs5I-RAslLPS5ZC9ujSvO2w9aWLi69dSJF1pXD_kKVYKQkJE/exec";
 
 const ADMIN_PHONES = ["01029733421", "01049084901"];
 
@@ -24,27 +24,18 @@ const SPACES = [
   { id: "room-1", name: "회의실 1", capacity: "최대 12명", desc: "팀 회의, 교육, 모임 운영에 적합" },
   { id: "room-2", name: "회의실 2", capacity: "최대 8명", desc: "소규모 회의, 상담, 인터뷰에 적합" },
   { id: "room-3", name: "회의실 3", capacity: "최대 8명", desc: "소규모 회의, 스터디, 간단한 워크숍에 적합" },
+  { id: "multi-1", name: "다목적실 1", capacity: "다목적 공간", desc: "발표 준비, 리허설, 소규모 운영에 적합" },
 ] as const;
 
 const DATES = [
-  "2026-05-17",
-  "2026-05-19",
-  "2026-05-20",
-  "2026-05-21",
-  "2026-05-22",
+  "2026-05-23",
+  "2026-05-26",
+  "2026-05-27",
+  "2026-05-28",
+  "2026-05-29",
 ] as const;
 
-const SUNDAY_SLOTS = [
-  "10:00-11:00",
-  "11:00-12:00",
-  "12:00-13:00",
-  "13:00-14:00",
-  "14:00-15:00",
-  "15:00-16:00",
-  "16:00-17:00",
-] as const;
-
-const WEEKDAY_SLOTS = [
+const EVENT_SLOTS = [
   "10:00-11:00",
   "11:00-12:00",
   "12:00-13:00",
@@ -57,6 +48,7 @@ const WEEKDAY_SLOTS = [
   "19:00-20:00",
   "20:00-21:00",
 ] as const;
+
 
 type Reservation = {
   id: string;
@@ -118,7 +110,7 @@ export default function ReservationLandingPage() {
     phone: "",
     spaceId: SPACES[0].id,
     date: DATES[0],
-    time: SUNDAY_SLOTS[0],
+    time: EVENT_SLOTS[0],
   });
 
   const normalizedPhone = normalizePhone(form.phone);
@@ -178,7 +170,7 @@ export default function ReservationLandingPage() {
       .sort(compareReservations);
   }, [reservations]);
 
-  const canSubmit = activeUser.isVerified && activePhone === normalizedPhone && activeUser.name === form.name.trim();
+  const canSubmit = isAdmin || (activeUser.isVerified && activePhone === normalizedPhone && activeUser.name === form.name.trim());
 
   useEffect(() => {
     void loadReservations();
@@ -272,6 +264,7 @@ export default function ReservationLandingPage() {
           id: selectedReservationId,
           name: form.name.trim(),
           phone: normalizedPhone,
+          actorPhone: activePhone,
           spaceId: form.spaceId,
           date: form.date,
           time: form.time,
@@ -382,32 +375,34 @@ export default function ReservationLandingPage() {
         <header className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/8 px-4 py-1.5 text-sm font-semibold text-emerald-200 backdrop-blur">
             <Sparkles className="h-4 w-4" />
-            데모데이 모임 장소 예약
+            데모데이 일정 변경 예약
           </div>
 
           <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-black leading-[1.18] tracking-[-0.04em] sm:text-5xl md:text-6xl md:leading-[1.13]">
-            필요한 시간과 공간을
+            변경된 데모데이 일정을 확인하고
             <br />
-            빠르게 예약하세요
+            원하는 공간을 예약하세요
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-            5월 17일 ~ 5월 22일 운영 · 일요일 10:00~17:00 · 화–금요일 10:00~21:00 · 월요일 휴관
+            5월 23일 ~ 5월 29일 운영 · 5월 24일, 5월 25일 제외
             <br />
-            운영 기간 중 1인 1회, 1시간만 예약 가능합니다.
+            모든 예약 가능일 10:00~21:00 운영 · 1인 1회, 1시간 예약 가능합니다.
           </p>
 
           <div className="mx-auto mt-5 max-w-2xl rounded-3xl border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm leading-6 text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-            <p className="font-semibold">예약 취소는 본인 예약 내역에서 운영 기간 중 1회만 직접 가능합니다.</p>
-            <p className="mt-1">
-              이후 취소가 필요한 경우 <strong className="font-black text-amber-50">{CONTACT_PHONE}</strong>로 문의해 주세요.
+            <p className="font-semibold">우선 선택권자는 5월 10일 12:00~22:00에 먼저 신청할 수 있습니다.</p>
+            <p className="mt-1">일반 신청자는 5월 11일 12:00~22:00에 남은 슬롯에 한해 신청 가능합니다.</p>
+            <p className="mt-1">우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.</p>
+            <p className="mt-2">
+              예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_PHONE}</strong>로 연락해 주세요.
             </p>
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Pill icon={<Clock3 className="h-4 w-4" />}>1시간 단위</Pill>
-            <Pill icon={<MapPin className="h-4 w-4" />}>회의실 3개</Pill>
-            <Pill icon={<MoonStar className="h-4 w-4" />}>선착순 예약</Pill>
+            <Pill icon={<MapPin className="h-4 w-4" />}>공간 4개</Pill>
+            <Pill icon={<MoonStar className="h-4 w-4" />}>우선/일반 신청</Pill>
           </div>
         </header>
 
@@ -474,11 +469,11 @@ export default function ReservationLandingPage() {
               side={<StatusBadge tone={availableCount > 0 ? "success" : "danger"}>{availableCount}개 가능</StatusBadge>}
             >
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-6 text-white/70">
-                <p>본인 예약 취소는 운영 기간 중 1회만 가능합니다.</p>
-                <p className="mt-1">반드시 이용 가능한 시간을 신중히 확인한 뒤 신청해 주세요.</p>
+                <p>변경된 데모데이 일정에 맞춰 원하는 날짜와 공간을 선택해 주세요.</p>
+                <p className="mt-1">예약은 운영 기간 중 1인 1회, 1시간만 가능합니다.</p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {SPACES.map((space) => {
                   const selected = form.spaceId === space.id;
                   return (
@@ -878,7 +873,7 @@ function StatusRow({
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-sm font-bold text-white">{time}</div>
-            <div className="mt-1 text-xs text-white/45">회의실 기준 현황</div>
+            <div className="mt-1 text-xs text-white/45">선택 공간 기준 현황</div>
           </div>
           <div className={`rounded-full px-3 py-1 text-xs font-bold ${active ? "bg-emerald-500/15 text-emerald-200" : "bg-white/8 text-white/70"}`}>
             {status}
@@ -959,10 +954,8 @@ function getSpaceName(spaceId: string) {
   return SPACES.find((space) => space.id === spaceId)?.name || "공간";
 }
 
-function getTimeSlotsForDate(dateString: string): string[] {
-  const date = new Date(dateString);
-  const day = date.getDay();
-  return day === 0 ? [...SUNDAY_SLOTS] : [...WEEKDAY_SLOTS];
+function getTimeSlotsForDate(_dateString: string): string[] {
+  return [...EVENT_SLOTS];
 }
 
 function onlyDigits(value: string) {
@@ -998,9 +991,10 @@ const DEV_TEST_CASES = [
   maskName("박지은") === "박*은",
   formatPhone("01029733421") === "010-2973-3421",
   formatPhone("01049084901") === "010-4908-4901",
-  getTimeSlotsForDate("2026-05-17").length === 7,
-  getTimeSlotsForDate("2026-05-19").length === 11,
+  getTimeSlotsForDate("2026-05-23").length === 11,
+  getTimeSlotsForDate("2026-05-26").length === 11,
   getSpaceName("room-2") === "회의실 2",
+  getSpaceName("multi-1") === "다목적실 1",
 ];
 
 if (typeof window !== "undefined" && DEV_TEST_CASES.some((passed) => !passed)) {
