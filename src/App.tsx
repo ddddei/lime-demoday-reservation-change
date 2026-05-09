@@ -13,8 +13,6 @@ const ADMIN_PHONES = [
   "01033808374",
 ];
 
-const CONTACT_TEXT = "예약 취소 및 문의는 디스코드 채널로 남겨주세요.";
-
 const SPACES = [
   { id: "room-1", name: "회의실 1", capacity: "최대 12명", desc: "팀 회의, 교육, 모임 운영에 적합" },
   { id: "room-2", name: "회의실 2", capacity: "최대 8명", desc: "소규모 회의, 상담, 인터뷰에 적합" },
