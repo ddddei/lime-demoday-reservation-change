@@ -3,13 +3,10 @@ import {
   AlertCircle,
   CalendarDays,
   CheckCircle2,
-  Clock3,
   Loader2,
   MapPin,
-  MoonStar,
   Phone,
   ShieldCheck,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 
@@ -401,8 +398,7 @@ export default function ReservationLandingPage() {
 
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
         <header className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/8 px-4 py-1.5 text-sm font-semibold text-emerald-200 backdrop-blur">
-            <Sparkles className="h-4 w-4" />
+          <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-sm font-semibold text-emerald-100/90 backdrop-blur">
             데모데이 일정 변경 예약
           </div>
 
@@ -412,70 +408,62 @@ export default function ReservationLandingPage() {
             데모데이 공간을 예약하세요
           </h1>
 
-          <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/70 sm:text-base">
+          <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/68 sm:text-base">
             5월 23일 ~ 5월 29일 운영 · 5월 24일, 5월 25일 제외 · 모든 예약 가능일 10:00~21:00
             <br />
-            운영 기간 중 1인 1회, 1시간 단위로 예약 가능합니다.
+            1시간 단위 · 공간 4개 · 운영 기간 중 1인 1회 예약
           </p>
 
-          <div className="mx-auto mt-5 grid max-w-4xl gap-3 text-left sm:grid-cols-2">
-            <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <p className="text-xs font-black tracking-[0.16em] text-emerald-200/80">PRIORITY</p>
-              <p className="mt-2 text-base font-black text-white">우선 선택권자</p>
-              <p className="mt-2 text-sm leading-6 text-white/70">5월 10일 12:00~22:00 먼저 신청할 수 있습니다.</p>
-            </div>
-
-            <div className="rounded-3xl border border-sky-300/20 bg-sky-300/10 px-5 py-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-              <p className="text-xs font-black tracking-[0.16em] text-sky-200/80">GENERAL</p>
-              <p className="mt-2 text-base font-black text-white">일반 신청자</p>
-              <p className="mt-2 text-sm leading-6 text-white/70">5월 11일 12:00~22:00 남은 슬롯에 한해 신청 가능합니다.</p>
-            </div>
-
-            <div className="rounded-3xl border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm leading-6 text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.18)] sm:col-span-2">
-              <p>우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.</p>
-              <p className="mt-1">
-                예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_CHANNEL}</strong> 채널로 남겨주세요.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <Pill icon={<Clock3 className="h-4 w-4" />}>1시간 단위</Pill>
-            <Pill icon={<MapPin className="h-4 w-4" />}>공간 4개</Pill>
-            <Pill icon={<MoonStar className="h-4 w-4" />}>우선/일반 신청</Pill>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-5xl rounded-[28px] border border-white/10 bg-white/[0.055] p-4 text-left shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:p-5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-black tracking-[0.16em] text-emerald-200/80">LIVE SUMMARY</p>
-                <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-white">전체 신청 현황</h2>
-                <p className="mt-1 text-xs leading-5 text-white/50">예약완료 상태 기준으로 날짜별·공간별 잔여 현황이 자동 집계됩니다.</p>
+          <div className="mx-auto mt-5 max-w-4xl rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-left shadow-[0_16px_44px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-black text-white">우선 선택권자</p>
+                  <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-100">5/10</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-white/62">12:00~22:00 먼저 신청할 수 있습니다.</p>
               </div>
-              <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-right">
-                <p className="text-xs font-bold text-emerald-100/75">총 신청자</p>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-black text-white">일반 신청자</p>
+                  <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs font-bold text-white/70">5/11</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-white/62">12:00~22:00 남은 슬롯에 한해 신청 가능합니다.</p>
+              </div>
+            </div>
+
+            <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/[0.07] px-4 py-3 text-sm leading-6 text-amber-50/90">
+              <p>우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.</p>
+              <p className="mt-1">예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_CHANNEL}</strong> 채널로 남겨주세요.</p>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-6 max-w-5xl rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-left shadow-[0_16px_44px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-black tracking-[-0.02em] text-white">전체 신청 현황</h2>
+                <p className="mt-1 text-xs leading-5 text-white/48">예약완료 기준으로 자동 집계됩니다.</p>
+              </div>
+              <div className="text-left sm:text-right">
+                <p className="text-xs font-bold text-white/45">총 신청자</p>
                 <p className="mt-1 text-3xl font-black text-emerald-100">{totalApplicantCount}명</p>
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-5">
               {dateSummaries.map((summary) => (
-                <div key={summary.date} className="rounded-2xl border border-white/10 bg-[#11182d]/75 px-3 py-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-xs font-bold text-white/55">{formatDate(summary.date)}</p>
-                      <p className="mt-2 text-2xl font-black text-white">{summary.count}명</p>
-                    </div>
-                    <div className="rounded-full bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-white/45">
-                      총 잔여 {summary.remaining}
-                    </div>
+                <div key={summary.date} className="rounded-2xl border border-white/10 bg-[#11182d]/62 px-3.5 py-3">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="text-xs font-bold text-white/58">{formatDate(summary.date)}</p>
+                    <p className="text-lg font-black text-white">{summary.count}명</p>
                   </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-1.5">
+                  <div className="mt-3 space-y-1.5">
                     {summary.spaces.map((space) => (
-                      <div key={space.id} className="rounded-xl border border-white/8 bg-white/[0.035] px-2 py-2">
-                        <p className="truncate text-[10px] font-bold text-white/45">{space.name}</p>
-                        <p className="mt-1 text-sm font-black text-emerald-100">{space.remaining}개</p>
+                      <div key={space.id} className="flex items-center justify-between gap-2 text-xs">
+                        <span className="truncate text-white/48">{space.name}</span>
+                        <span className="font-black text-emerald-100/90">{space.remaining}개</span>
                       </div>
                     ))}
                   </div>
@@ -566,7 +554,7 @@ export default function ReservationLandingPage() {
                           time: getTimeSlotsForDate(prev.date)[0],
                         }))
                       }
-                      className={`rounded-2xl border px-4 py-4 text-left transition ${
+                      className={`rounded-2xl border px-4 py-3.5 text-left transition ${
                         selected
                           ? "border-emerald-300/50 bg-emerald-400/12 ring-4 ring-emerald-400/10"
                           : "border-white/10 bg-[#11182d]/70 hover:border-white/20 hover:bg-white/[0.06]"
@@ -622,7 +610,7 @@ export default function ReservationLandingPage() {
                           type="button"
                           disabled={taken}
                           onClick={() => setForm((prev) => ({ ...prev, time: slot }))}
-                          className={`min-h-[76px] rounded-2xl border px-4 py-4 text-left text-sm font-semibold transition active:scale-[0.98] ${
+                          className={`min-h-[68px] rounded-2xl border px-4 py-3.5 text-left text-sm font-semibold transition active:scale-[0.98] ${
                             taken
                               ? "cursor-not-allowed border-white/8 bg-white/[0.03] text-white/35"
                               : selected
@@ -843,7 +831,7 @@ function GlassCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[30px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl sm:p-6">
+    <div className="rounded-[28px] border border-white/10 bg-white/[0.042] p-5 shadow-[0_16px_44px_rgba(0,0,0,0.20)] backdrop-blur-xl sm:p-6">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
           {eyebrow ? <p className="mb-1 text-xs font-black tracking-[0.16em] text-emerald-200/80">{eyebrow}</p> : null}
@@ -915,14 +903,6 @@ function GhostButton({
   );
 }
 
-function Pill({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-white/75 backdrop-blur">
-      {icon}
-      {children}
-    </div>
-  );
-}
 
 function StatusBadge({ children, tone }: { children: React.ReactNode; tone: "success" | "danger" | "muted" }) {
   const className =
