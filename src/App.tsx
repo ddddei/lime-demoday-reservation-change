@@ -14,11 +14,11 @@ import {
 } from "lucide-react";
 
 const API_BASE_URL =
-  "https://script.google.com/macros/s/AKfycbzNNroB6Io6Pi4mZwcnEs5I-RAslLPS5ZC9ujSvO2w9aWLi69dSJF1pXD_kKVYKQkJE/exec";
+  "https://script.google.com/macros/s/AKfycbxpbmUoyAkJF1c82VsWruyeRCZNVqRrlZKPXjbmvk9xJD7wI8Enjln1c8dGCPnGGsxC/exec";
 
-const ADMIN_PHONES = ["01029733421", "01049084901"];
+const ADMIN_PHONES = ["01029733421", "01049084901", "01045484592", "01044309870", "01033808374"];
 
-const CONTACT_PHONE = "02-2066-8134";
+const CONTACT_CHANNEL = "디스코드";
 
 const SPACES = [
   { id: "room-1", name: "회의실 1", capacity: "최대 12명", desc: "팀 회의, 교육, 모임 운영에 적합" },
@@ -164,11 +164,27 @@ export default function ReservationLandingPage() {
       .sort(compareReservations);
   }, [reservations, activePhone]);
 
-  const adminReservations = useMemo(() => {
-    return [...reservations]
-      .filter((item) => item.status === "예약완료")
-      .sort(compareReservations);
+  const activeReservations = useMemo(() => {
+    return reservations.filter((item) => item.status === "예약완료");
   }, [reservations]);
+
+  const totalApplicantCount = activeReservations.length;
+
+  const dateSummaries = useMemo(() => {
+    return DATES.map((date) => {
+      const count = activeReservations.filter((item) => item.date === date).length;
+      const totalSlots = SPACES.length * getTimeSlotsForDate(date).length;
+      return {
+        date,
+        count,
+        remaining: Math.max(totalSlots - count, 0),
+      };
+    });
+  }, [activeReservations]);
+
+  const adminReservations = useMemo(() => {
+    return [...activeReservations].sort(compareReservations);
+  }, [activeReservations]);
 
   const canSubmit = isAdmin || (activeUser.isVerified && activePhone === normalizedPhone && activeUser.name === form.name.trim());
 
@@ -198,8 +214,8 @@ export default function ReservationLandingPage() {
   }
 
   async function handleIdentityApply() {
-    if (!form.name.trim() || normalizedPhone.length !== 11) {
-      showMessage("이름과 전화번호 11자리를 정확히 입력해 주세요.", "error");
+    if (!form.name.trim() || !isValidPhoneForIdentity(normalizedPhone)) {
+      showMessage("이름과 전화번호를 정확히 입력해 주세요.", "error");
       return;
     }
 
@@ -236,8 +252,8 @@ export default function ReservationLandingPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!form.name.trim() || normalizedPhone.length !== 11) {
-      showMessage("이름과 전화번호 11자리를 정확히 입력해 주세요.", "error");
+    if (!form.name.trim() || !isValidPhoneForIdentity(normalizedPhone)) {
+      showMessage("이름과 전화번호를 정확히 입력해 주세요.", "error");
       return;
     }
 
@@ -371,42 +387,79 @@ export default function ReservationLandingPage() {
     <div className="min-h-screen bg-[#080d1c] text-white">
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.18),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(99,102,241,0.18),transparent_32%),linear-gradient(180deg,#0b1020_0%,#070b16_100%)]" />
 
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-14">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
         <header className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/8 px-4 py-1.5 text-sm font-semibold text-emerald-200 backdrop-blur">
             <Sparkles className="h-4 w-4" />
             데모데이 일정 변경 예약
           </div>
 
-          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-black leading-[1.18] tracking-[-0.04em] sm:text-5xl md:text-6xl md:leading-[1.13]">
-            변경된 데모데이 일정을 확인하고
+          <h1 className="mx-auto mt-5 max-w-4xl text-3xl font-black leading-[1.2] tracking-[-0.04em] sm:text-4xl md:text-5xl md:leading-[1.14]">
+            변경된 일정에 맞춰
             <br />
-            원하는 공간을 예약하세요
+            데모데이 공간을 예약하세요
           </h1>
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-            5월 23일 ~ 5월 29일 운영 · 5월 24일, 5월 25일 제외
+          <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/70 sm:text-base">
+            5월 23일 ~ 5월 29일 운영 · 5월 24일, 5월 25일 제외 · 모든 예약 가능일 10:00~21:00
             <br />
-            모든 예약 가능일 10:00~21:00 운영 · 1인 1회, 1시간 예약 가능합니다.
+            운영 기간 중 1인 1회, 1시간 단위로 예약 가능합니다.
           </p>
 
-          <div className="mx-auto mt-5 max-w-2xl rounded-3xl border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm leading-6 text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
-            <p className="font-semibold">우선 선택권자는 5월 10일 12:00~22:00에 먼저 신청할 수 있습니다.</p>
-            <p className="mt-1">일반 신청자는 5월 11일 12:00~22:00에 남은 슬롯에 한해 신청 가능합니다.</p>
-            <p className="mt-1">우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.</p>
-            <p className="mt-2">
-              예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_PHONE}</strong>로 연락해 주세요.
-            </p>
+          <div className="mx-auto mt-5 grid max-w-4xl gap-3 text-left sm:grid-cols-2">
+            <div className="rounded-3xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+              <p className="text-xs font-black tracking-[0.16em] text-emerald-200/80">PRIORITY</p>
+              <p className="mt-2 text-base font-black text-white">우선 선택권자</p>
+              <p className="mt-2 text-sm leading-6 text-white/70">5월 10일 12:00~22:00 먼저 신청할 수 있습니다.</p>
+            </div>
+
+            <div className="rounded-3xl border border-sky-300/20 bg-sky-300/10 px-5 py-4 shadow-[0_18px_50px_rgba(0,0,0,0.18)]">
+              <p className="text-xs font-black tracking-[0.16em] text-sky-200/80">GENERAL</p>
+              <p className="mt-2 text-base font-black text-white">일반 신청자</p>
+              <p className="mt-2 text-sm leading-6 text-white/70">5월 11일 12:00~22:00 남은 슬롯에 한해 신청 가능합니다.</p>
+            </div>
+
+            <div className="rounded-3xl border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm leading-6 text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.18)] sm:col-span-2">
+              <p>
+                우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.
+                <span className="mx-2 text-amber-200/50">/</span>
+                예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_CHANNEL}</strong> 채널로 남겨주세요.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Pill icon={<Clock3 className="h-4 w-4" />}>1시간 단위</Pill>
             <Pill icon={<MapPin className="h-4 w-4" />}>공간 4개</Pill>
             <Pill icon={<MoonStar className="h-4 w-4" />}>우선/일반 신청</Pill>
           </div>
+
+          <div className="mx-auto mt-6 max-w-4xl rounded-[28px] border border-white/10 bg-white/[0.055] p-4 text-left shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-black tracking-[0.16em] text-emerald-200/80">LIVE SUMMARY</p>
+                <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-white">전체 신청 현황</h2>
+                <p className="mt-1 text-xs leading-5 text-white/50">예약완료 상태 기준으로 자동 집계됩니다.</p>
+              </div>
+              <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-right">
+                <p className="text-xs font-bold text-emerald-100/75">총 신청자</p>
+                <p className="mt-1 text-3xl font-black text-emerald-100">{totalApplicantCount}명</p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
+              {dateSummaries.map((summary) => (
+                <div key={summary.date} className="rounded-2xl border border-white/10 bg-[#11182d]/75 px-3 py-3">
+                  <p className="text-xs font-bold text-white/55">{formatDate(summary.date)}</p>
+                  <p className="mt-2 text-2xl font-black text-white">{summary.count}명</p>
+                  <p className="mt-1 text-[11px] font-semibold text-white/40">잔여 {summary.remaining}칸</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </header>
 
-        <section className="mt-10 grid gap-6 lg:grid-cols-[1fr_0.95fr] lg:items-start">
+        <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.95fr] lg:items-start">
           <div className="space-y-6">
             <GlassCard
               eyebrow="STEP 1"
@@ -469,7 +522,7 @@ export default function ReservationLandingPage() {
               side={<StatusBadge tone={availableCount > 0 ? "success" : "danger"}>{availableCount}개 가능</StatusBadge>}
             >
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-6 text-white/70">
-                <p>변경된 데모데이 일정에 맞춰 원하는 날짜와 공간을 선택해 주세요.</p>
+                <p>날짜와 공간을 선택한 뒤, 비어 있는 1시간 슬롯을 예약해 주세요.</p>
                 <p className="mt-1">예약은 운영 기간 중 1인 1회, 1시간만 가능합니다.</p>
               </div>
 
@@ -649,7 +702,7 @@ export default function ReservationLandingPage() {
 
             <GlassCard eyebrow="MY BOOKING" title="내 예약">
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-6 text-white/65">
-                본인 예약 취소는 운영 기간 중 1회만 가능합니다. 이후 취소가 필요한 경우 {CONTACT_PHONE}로 문의해 주세요.
+                본인 예약 취소는 운영 기간 중 1회만 가능합니다. 이후 취소 및 문의가 필요한 경우 {CONTACT_CHANNEL} 채널로 남겨주세요.
               </div>
 
               {myReservations.length === 0 ? (
@@ -966,8 +1019,17 @@ function normalizePhone(value: string | undefined | null) {
   return onlyDigits(value || "");
 }
 
+function isValidPhoneForIdentity(value: string) {
+  return value.length === 11 || ADMIN_PHONES.includes(value);
+}
+
 function formatPhone(value: string) {
   const digits = normalizePhone(value);
+
+  if (digits.length === 10 && digits.startsWith("02")) {
+    return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+
   if (digits.length !== 11) return digits;
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
@@ -991,6 +1053,8 @@ const DEV_TEST_CASES = [
   maskName("박지은") === "박*은",
   formatPhone("01029733421") === "010-2973-3421",
   formatPhone("01049084901") === "010-4908-4901",
+  formatPhone("0220668134") === "02-2066-8134",
+  isValidPhoneForIdentity("01045484592") === true,
   getTimeSlotsForDate("2026-05-23").length === 11,
   getTimeSlotsForDate("2026-05-26").length === 11,
   getSpaceName("room-2") === "회의실 2",
