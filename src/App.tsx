@@ -442,7 +442,7 @@ export default function ReservationLandingPage() {
               <div className="mt-3 rounded-xl border border-[#d8a7ff]/25 bg-[#d8a7ff]/10 px-3 py-2 text-[#f0ddff]">
                 <p className="font-black">문의는 전화가 아닌 디스코드 채널로 남겨주세요.</p>
                 <p className="mt-1 text-white/70">
-                  내일은 직원들이 재택으로 디스코드 문의를 확인하며 순차적으로 응대할 예정입니다.
+                  직원들이 디스코드 문의를 확인하며 순차적으로 응대할 예정입니다.
                 </p>
               </div>
             </div>
@@ -724,7 +724,7 @@ export default function ReservationLandingPage() {
 
             <Card eyebrow="MY BOOKING" title="내 예약">
               <div className="rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm leading-6 text-white/58">
-                문의는 전화가 아닌 디스코드 채널로 남겨주세요. 내일은 직원들이 재택으로 디스코드 문의를 확인하며 순차적으로 안내드립니다.
+                문의는 전화가 아닌 디스코드 채널로 남겨주세요. 직원들이 디스코드 문의를 확인하며 순차적으로 안내드립니다.
               </div>
 
               {myReservations.length === 0 ? (
