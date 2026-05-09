@@ -24,7 +24,7 @@ const SPACES = [
   { id: "room-1", name: "회의실 1", capacity: "최대 12명", desc: "팀 회의, 교육, 모임 운영에 적합" },
   { id: "room-2", name: "회의실 2", capacity: "최대 8명", desc: "소규모 회의, 상담, 인터뷰에 적합" },
   { id: "room-3", name: "회의실 3", capacity: "최대 8명", desc: "소규모 회의, 스터디, 간단한 워크숍에 적합" },
-  { id: "multi-1", name: "다목적실 1", capacity: "다목적 공간", desc: "발표 준비, 리허설, 소규모 운영에 적합" },
+  { id: "multi-1", name: "다목적실 1", capacity: "다목적 공간", desc: "댄스 및 운동, 워크숍 등 다양한 활동을 위한 공간" },
 ] as const;
 
 const DATES = [
@@ -172,12 +172,24 @@ export default function ReservationLandingPage() {
 
   const dateSummaries = useMemo(() => {
     return DATES.map((date) => {
+      const slotsPerSpace = getTimeSlotsForDate(date).length;
       const count = activeReservations.filter((item) => item.date === date).length;
-      const totalSlots = SPACES.length * getTimeSlotsForDate(date).length;
+      const totalSlots = SPACES.length * slotsPerSpace;
+      const spaces = SPACES.map((space) => {
+        const used = activeReservations.filter((item) => item.date === date && item.spaceId === space.id).length;
+        return {
+          id: space.id,
+          name: space.name,
+          used,
+          remaining: Math.max(slotsPerSpace - used, 0),
+        };
+      });
+
       return {
         date,
         count,
         remaining: Math.max(totalSlots - count, 0),
+        spaces,
       };
     });
   }, [activeReservations]);
@@ -420,9 +432,8 @@ export default function ReservationLandingPage() {
             </div>
 
             <div className="rounded-3xl border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm leading-6 text-amber-100 shadow-[0_18px_50px_rgba(0,0,0,0.18)] sm:col-span-2">
-              <p>
-                우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.
-                <span className="mx-2 text-amber-200/50">/</span>
+              <p>우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.</p>
+              <p className="mt-1">
                 예약 취소 및 문의는 <strong className="font-black text-amber-50">{CONTACT_CHANNEL}</strong> 채널로 남겨주세요.
               </p>
             </div>
@@ -434,12 +445,12 @@ export default function ReservationLandingPage() {
             <Pill icon={<MoonStar className="h-4 w-4" />}>우선/일반 신청</Pill>
           </div>
 
-          <div className="mx-auto mt-6 max-w-4xl rounded-[28px] border border-white/10 bg-white/[0.055] p-4 text-left shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:p-5">
+          <div className="mx-auto mt-6 max-w-5xl rounded-[28px] border border-white/10 bg-white/[0.055] p-4 text-left shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-black tracking-[0.16em] text-emerald-200/80">LIVE SUMMARY</p>
                 <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-white">전체 신청 현황</h2>
-                <p className="mt-1 text-xs leading-5 text-white/50">예약완료 상태 기준으로 자동 집계됩니다.</p>
+                <p className="mt-1 text-xs leading-5 text-white/50">예약완료 상태 기준으로 날짜별·공간별 잔여 현황이 자동 집계됩니다.</p>
               </div>
               <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-right">
                 <p className="text-xs font-bold text-emerald-100/75">총 신청자</p>
@@ -447,12 +458,27 @@ export default function ReservationLandingPage() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
               {dateSummaries.map((summary) => (
                 <div key={summary.date} className="rounded-2xl border border-white/10 bg-[#11182d]/75 px-3 py-3">
-                  <p className="text-xs font-bold text-white/55">{formatDate(summary.date)}</p>
-                  <p className="mt-2 text-2xl font-black text-white">{summary.count}명</p>
-                  <p className="mt-1 text-[11px] font-semibold text-white/40">잔여 {summary.remaining}칸</p>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-bold text-white/55">{formatDate(summary.date)}</p>
+                      <p className="mt-2 text-2xl font-black text-white">{summary.count}명</p>
+                    </div>
+                    <div className="rounded-full bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-white/45">
+                      총 잔여 {summary.remaining}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-1.5">
+                    {summary.spaces.map((space) => (
+                      <div key={space.id} className="rounded-xl border border-white/8 bg-white/[0.035] px-2 py-2">
+                        <p className="truncate text-[10px] font-bold text-white/45">{space.name}</p>
+                        <p className="mt-1 text-sm font-black text-emerald-100">{space.remaining}개</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
