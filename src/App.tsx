@@ -415,30 +415,38 @@ export default function ReservationLandingPage() {
           </p>
 
           <h1 className="mx-auto mt-4 max-w-3xl text-3xl font-black leading-[1.18] tracking-[-0.04em] sm:text-5xl">
-            변경된 일정에 맞춰
+            데모데이 일정이 변경되었습니다
             <br />
-            데모데이 공간을 예약하세요
+            새 일정에 맞춰 다시 예약해 주세요
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-white/62">
-            5월 23일 ~ 5월 29일 운영 · 5월 24일, 5월 25일 제외 · 모든 예약 가능일 10:00~21:00
+            기존 데모데이 일정과 다르니 반드시 변경된 날짜를 확인한 뒤 신청해 주세요.
             <br />
-            운영 기간 중 1인 1회, 1시간 단위로 예약 가능합니다.
+            예약 가능일은 5월 23일, 26일, 27일, 28일, 29일이며 모든 예약은 10:00~21:00 사이 1시간 단위로 가능합니다.
           </p>
 
           <section className="mx-auto mt-6 max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-white/[0.045]">
             <div className="grid gap-px bg-white/10 sm:grid-cols-2">
               <CompactNotice title="우선 선택권자" label="PRIORITY" accent="lime">
-                5월 10일 12:00~22:00 먼저 신청
+                5월 10일 12:00~22:00 먼저 신청 · 이후에는 남은 슬롯 기준
               </CompactNotice>
               <CompactNotice title="일반 신청자" label="GENERAL" accent="purple">
-                5월 11일 12:00~22:00 남은 슬롯 신청
+                5월 11일 12:00~22:00부터 신청 · 남은 슬롯 선착순
               </CompactNotice>
             </div>
-            <div className="border-t border-white/10 px-4 py-3 text-left text-xs leading-5 text-white/68 sm:px-5">
-              우선 선택권자가 5월 10일에 신청하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.
-              <br />
-              {CONTACT_TEXT}
+            <div className="border-t border-white/10 px-4 py-3 text-left text-xs leading-5 text-white/72 sm:px-5">
+              <p className="font-bold text-[#eaff8a]">신청 시간 이후에는 우선 선택권이 보장되지 않습니다.</p>
+              <p className="mt-1">
+                우선 선택권자가 5월 10일 신청 시간 내 예약하지 못한 경우, 5월 11일 일반 신청 시간에 함께 신청할 수 있습니다.
+              </p>
+              <p className="mt-1">단, 5월 11일부터는 모든 신청자가 남은 슬롯 기준 선착순으로 예약합니다.</p>
+              <div className="mt-3 rounded-xl border border-[#d8a7ff]/25 bg-[#d8a7ff]/10 px-3 py-2 text-[#f0ddff]">
+                <p className="font-black">문의는 전화가 아닌 디스코드 채널로 남겨주세요.</p>
+                <p className="mt-1 text-white/70">
+                  내일은 직원들이 재택으로 디스코드 문의를 확인하며 순차적으로 응대할 예정입니다.
+                </p>
+              </div>
             </div>
           </section>
         </header>
@@ -718,7 +726,7 @@ export default function ReservationLandingPage() {
 
             <Card eyebrow="MY BOOKING" title="내 예약">
               <div className="rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm leading-6 text-white/58">
-                {CONTACT_TEXT} 운영자가 확인 후 순차적으로 안내드립니다.
+                문의는 전화가 아닌 디스코드 채널로 남겨주세요. 내일은 직원들이 재택으로 디스코드 문의를 확인하며 순차적으로 안내드립니다.
               </div>
 
               {myReservations.length === 0 ? (
